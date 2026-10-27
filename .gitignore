@@ -1,0 +1,16 @@
+# Arquivos gerados pela compilação.
+**/build/
+*.o
+*.d
+/projetos/helicopter/helicoptero
+/projetos/carousel/carousel
+/projetos/kamikaze/kamikaze
+/projetos/waveSwinger/waveSwinger
+/projetos/chaViking/chaViking
+
+# Backups e arquivos temporários.
+*.blend1
+*.blend2
+*~
+.DS_Store
+Thumbs.db

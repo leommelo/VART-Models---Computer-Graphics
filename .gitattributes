@@ -1,0 +1,9 @@
+*.cpp text eol=lf
+*.h text eol=lf
+Makefile text eol=lf
+*.md text eol=lf
+*.mtl text eol=lf
+*.obj text eol=lf -diff
+*.blend binary
+*.png binary
+*.jpg binary
