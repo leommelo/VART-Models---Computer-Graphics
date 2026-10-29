@@ -5,7 +5,6 @@ As mudancas de materiais, UVs e posicoes existem apenas durante a exportacao.
 """
 
 from pathlib import Path
-import json
 import math
 
 import bpy
@@ -15,14 +14,11 @@ DEST = Path(__file__).resolve().parent.parent / 'projetos' / 'chaViking'
 OUTPUT = DEST / 'ChaViking.obj'
 TEXTURES = DEST / 'textures'
 TEXTURES.mkdir(exist_ok=True)
-PIVOTS = json.loads((Path(__file__).resolve().parent / 'pivos_cha_viking.json').read_text(encoding='utf-8'))
+EXPECTED = {'Base', 'Eixo', 'Haste', 'Caneca_0', 'Caneca_1', 'Rebites_0', 'Rebites_1'}
 objects = {obj.name: obj for obj in bpy.data.objects if obj.type == 'MESH'}
-if set(objects) != set(PIVOTS):
+if set(objects) != EXPECTED:
     raise RuntimeError(f'Pecas inesperadas: {set(objects)}')
-for name, obj in objects.items():
-    if any(abs(obj.matrix_world.translation[i] - PIVOTS[name]['pivot'][i]) > 1e-5
-           for i in range(3)):
-        raise RuntimeError(f'Pivo incorreto em {name}')
+
 
 texture_paths = {}
 

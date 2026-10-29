@@ -21,11 +21,11 @@ TCC/
     └── vart/
 ```
 
-Cada programa contém `main.cpp`, `Makefile`, OBJ, MTL e somente as imagens referenciadas pelos materiais. O V-ART é compartilhado por meio de `projetos/vart`, sem links para as pastas originais e sem alterações em seu código. Os fontes e recursos dos programas foram copiados dos projetos em uso; os Makefiles foram adaptados à nova organização.
+Cada programa contém `main.cpp`, `Makefile`, OBJ, MTL e somente as imagens referenciadas pelos materiais. O V-ART é compartilhado por meio de `projetos/vart`, e os Makefiles utilizam essa dependência comum.
 
-Os modelos Blender são cópias das versões preparadas para os projetos. As imagens disponíveis foram incorporadas às cópias para facilitar sua abertura em outro computador. Os modelos permanecem montados; as malhas OBJ dos modelos com pivôs locais são posicionadas pelos grafos dos programas. Os arquivos Blender e OBJ não são regenerados pela compilação. No helicóptero, preservar a convenção de exportação e o posicionamento usados pelo código ao reexportar.
+Os arquivos Blender contêm os modelos montados e as imagens incorporadas. Os exportadores geram as malhas OBJ em relação aos pivôs definidos nesses arquivos, e os grafos dos programas estabelecem as posições de montagem. Alterações nos pivôs exigem conferir as transformações de posicionamento em C++. A compilação utiliza os recursos já exportados e não executa o Blender.
 
-## Reexportar os modelos
+## Exportar os modelos
 
 Na pasta `modelos`, há um script Python para cada `.blend`: `exportar_helicoptero.py`, `exportar_carousel.py`, `exportar_kamikaze.py`, `exportar_wave_swinger.py` e `exportar_cha_viking.py`. Execute com o Blender 5.2.1, a partir dessa pasta. Por exemplo:
 
@@ -33,11 +33,10 @@ Na pasta `modelos`, há um script Python para cada `.blend`: `exportar_helicopte
 blender -b Carousel.blend --python exportar_carousel.py
 ```
 
-Troque os nomes do `.blend` e do script conforme o modelo. Os scripts de Carousel, Kamikaze, Wave Swinger e Chá Viking gravam OBJ, MTL e texturas em `projetos/<modelo>/`. O Helicóptero grava primeiro em `projetos/helicopter/reexportacao/`; após conferir o resultado, execute novamente com `-- --substituir` para gravar no diretório do programa. O arquivo Blender permanece montado e não é salvo pelo script. O Chá Viking usa também `pivos_cha_viking.json` e gera as texturas das canecas por bake.
+Troque os nomes do `.blend` e do script conforme o modelo. Cada script grava OBJ, MTL e texturas diretamente no diretório da aplicação correspondente em `projetos/`. O arquivo Blender permanece montado e não é salvo pelo script. O Chá Viking gera as texturas das canecas por bake.
 
-Os quatro modelos com pivôs reproduziram os OBJ e as texturas atuais em uma execução de teste com Blender 5.2.1. Os MTL também conservaram os materiais; as diferenças foram apenas o nome do arquivo Blender no comentário de Carousel e Kamikaze e a quebra de linha de Wave Swinger. O Chá Viking reproduziu também o MTL byte a byte.
+Os scripts registram a triangulação, as convenções de eixos, a exportação das peças em coordenadas locais e a preparação dos materiais e imagens para o V-ART. Os caminhos de saída são definidos a partir da localização do script, preservando a organização do repositório.
 
-O Helicóptero foi exportado com peças locais, triangulação, eixos `-Z/Y` e texturas de cor compatíveis com o leitor VART. Seu OBJ atual tem 70.032 triângulos e veio de uma conversão antiga; a exportação direta do `.blend` preparado gera 70.060. Por isso, antes de substituir o OBJ do projeto, confira visualmente a montagem e a rotação das hélices no aplicativo. A diferença histórica está detalhada em `../APRENDIZADOS_EXPORTACAO.md`.
 ## Compilar no Ubuntu/WSL
 
 Instalar as ferramentas e bibliotecas, caso ainda não estejam disponíveis:

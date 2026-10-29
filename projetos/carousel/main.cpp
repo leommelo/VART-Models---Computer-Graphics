@@ -135,6 +135,8 @@ int main(int argc, char* argv[])
     // A camera automatica olha de cima; baixamos para mostrar os cavalos.
     camera.SetLocation(VART::Point4D(36, 17, 36));
     camera.SetTarget(VART::Point4D(0, 10, 0));
+    // Mantem todo o brinquedo dentro do alcance da camera, inclusive os cavalos ao fundo.
+    camera.SetFarPlaneDistance(100.0f);
     viewer.SetIdleHandler(&idleHandler);
 
     cout << "Carrossel com " << NUM_CAVALOS << " cavalos e postes.\n";

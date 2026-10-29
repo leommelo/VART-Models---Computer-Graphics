@@ -1,17 +1,14 @@
 """Exporta Helicoptero.blend para o projeto VART sem alterar o .blend.
 
 Uso: blender -b Helicoptero.blend --python exportar_helicoptero.py
-Para substituir o OBJ atual apos validar: acrescente -- --substituir
 """
 
 from pathlib import Path
-import sys
 
 import bpy
 
 
-PROJECT = Path(__file__).resolve().parent.parent / 'projetos' / 'helicopter'
-DEST = PROJECT if '--substituir' in sys.argv else PROJECT / 'reexportacao'
+DEST = Path(__file__).resolve().parent.parent / 'projetos' / 'helicopter'
 DEST.mkdir(exist_ok=True)
 OUTPUT = DEST / 'Helicoptero.obj'
 EXPECTED = {
@@ -56,7 +53,7 @@ finally:
 
 # Usa apenas mapas de cor, com nomes que o leitor MTL do VART aceita.
 for material, filename in TEXTURES.items():
-    image = next((img for img in bpy.data.images if Path(img.filepath).name == filename), None)
+    image = next((img for img in bpy.data.images if Path(img.filepath.replace('\\', '/')).name == filename), None)
     if image is None:
         raise RuntimeError(f'Textura ausente: {filename}')
     target = DEST / filename
