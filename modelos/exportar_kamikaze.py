@@ -10,12 +10,12 @@ import bpy
 
 
 DEST = Path(__file__).resolve().parent.parent / 'projetos' / 'kamikaze'
-EXPECTED = {'Base', 'Rod', 'Plataform', 'Chair'}
+# As cadeiras (Array aplicado) fazem parte da malha Plataform.
+EXPECTED = {'Base', 'Rod', 'Plataform'}
 PIVOTS = {
     'Base': (0.0, 0.0, 0.0),
     'Rod': (0.0, 0.0, 7.793174743652344),
     'Plataform': (0.0, 0.0, 0.6151113510131836),
-    'Chair': (0.0, 0.0, 0.6151113510131836),
 }
 
 meshes = {obj.name for obj in bpy.data.objects if obj.type == 'MESH'}
@@ -52,8 +52,7 @@ for material in bpy.data.materials:
             if link.from_node.type == 'TEX_IMAGE' and link.to_socket.name != 'Base Color':
                 material.node_tree.links.remove(link)
 
-# Remove o parentesco temporariamente e zera a posicao no mundo. Chair e
-# filho de Plataform no .blend; zerar apenas location nao zeraria seu pivo.
+# Remove o parentesco temporariamente e zera a posicao no mundo de cada peca.
 original_matrices = {name: bpy.data.objects[name].matrix_world.copy() for name in EXPECTED}
 original_parents = {name: bpy.data.objects[name].parent for name in EXPECTED}
 for name in EXPECTED:

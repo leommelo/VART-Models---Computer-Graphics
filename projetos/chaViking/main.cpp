@@ -76,18 +76,15 @@ int main(int argc, char* argv[]) {
     VART::MeshObject* base = nullptr;
     VART::MeshObject* eixo = nullptr;
     VART::MeshObject* haste = nullptr;
-    VART::MeshObject* canecas[NUM_CANECAS] = {};
-    VART::MeshObject* rebites[NUM_CANECAS] = {};
+    VART::MeshObject* canecas[NUM_CANECAS] = {}; // rebites fazem parte da malha
     for (auto* object : objects) {
         const string name = object->GetDescription();
         if (name == "Base") base = object;
         else if (name == "Eixo") eixo = object;
         else if (name == "Haste") haste = object;
         else {
-            for (int i = 0; i < NUM_CANECAS; ++i) {
+            for (int i = 0; i < NUM_CANECAS; ++i)
                 if (name == "Caneca_" + to_string(i)) canecas[i] = object;
-                if (name == "Rebites_" + to_string(i)) rebites[i] = object;
-            }
         }
     }
     if (!base || !eixo || !haste) {
@@ -95,8 +92,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     for (int i = 0; i < NUM_CANECAS; ++i) {
-        if (!canecas[i] || !rebites[i]) {
-            cerr << "Caneca ou rebites ausentes: " << i << ".\n";
+        if (!canecas[i]) {
+            cerr << "Caneca ausente: " << i << ".\n";
             return 1;
         }
     }
@@ -128,7 +125,6 @@ int main(int argc, char* argv[]) {
         giroHaste.AddChild(pivosCanecas[i]);
         pivosCanecas[i].AddChild(girosCanecas[i]);
         girosCanecas[i].AddChild(*canecas[i]);
-        girosCanecas[i].AddChild(*rebites[i]);
     }
 
     scene.AddLight(VART::Light::BRIGHT_AMBIENT());

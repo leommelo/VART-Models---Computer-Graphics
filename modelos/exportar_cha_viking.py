@@ -14,7 +14,8 @@ DEST = Path(__file__).resolve().parent.parent / 'projetos' / 'chaViking'
 OUTPUT = DEST / 'ChaViking.obj'
 TEXTURES = DEST / 'textures'
 TEXTURES.mkdir(exist_ok=True)
-EXPECTED = {'Base', 'Eixo', 'Haste', 'Caneca_0', 'Caneca_1', 'Rebites_0', 'Rebites_1'}
+# Os rebites fazem parte da malha de cada caneca.
+EXPECTED = {'Base', 'Eixo', 'Haste', 'Caneca_0', 'Caneca_1'}
 objects = {obj.name: obj for obj in bpy.data.objects if obj.type == 'MESH'}
 if set(objects) != EXPECTED:
     raise RuntimeError(f'Pecas inesperadas: {set(objects)}')

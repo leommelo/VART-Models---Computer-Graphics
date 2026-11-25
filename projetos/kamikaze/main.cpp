@@ -63,17 +63,15 @@ int main(int argc, char* argv[]) {
 
     VART::MeshObject* base = nullptr;
     VART::MeshObject* rod = nullptr;
-    VART::MeshObject* platform = nullptr;
-    VART::MeshObject* chair = nullptr;
+    VART::MeshObject* platform = nullptr; // inclui as cadeiras
     for (auto* object : objects) {
         const std::string name = object->GetDescription();
         if (name == "Base") base = object;
         else if (name == "Rod") rod = object;
         else if (name == "Plataform") platform = object;
-        else if (name == "Chair") chair = object;
     }
-    if (!base || !rod || !platform || !chair) {
-        std::cerr << "O OBJ precisa conter Base, Rod, Plataform e Chair.\n";
+    if (!base || !rod || !platform) {
+        std::cerr << "O OBJ precisa conter Base, Rod e Plataform.\n";
         return 1;
     }
 
@@ -100,7 +98,6 @@ int main(int argc, char* argv[]) {
     rotacaoHaste.AddChild(pivoAssentos);
     pivoAssentos.AddChild(rotacaoAssentos);
     rotacaoAssentos.AddChild(*platform);
-    rotacaoAssentos.AddChild(*chair);
 
     scene.AddLight(VART::Light::BRIGHT_AMBIENT());
     scene.AddCamera(&camera);
