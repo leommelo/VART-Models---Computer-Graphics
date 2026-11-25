@@ -7,9 +7,12 @@
 #include <vart/scene.h>
 #include <vart/light.h>
 #include <vart/meshobject.h>
+#include <vart/transform.h>
 #include <vart/contrib/viewerglutogl.h>
 
 #include <iostream>
+#include <list>
+#include <string>
 
 using namespace std;
 
@@ -74,29 +77,49 @@ int main(int argc, char* argv[])
     scene.AddObject(&missilesTransl);
     scene.AddObject(&baseTransl);
 
-    //Leitura
+    // Carrega e confere as seis pecas esperadas antes de montar a cena.
     list<VART::MeshObject*> objects;
-    VART::MeshObject::ReadFromOBJ("Helicoptero.obj", &objects);
-    list<VART::MeshObject*>::iterator iter = objects.begin();
-    for (; iter != objects.end(); ++iter) {
-        string name = (*iter)->GetDescription();
-        if (name == "Helicopter_Body"){
-            bodyTransl.AddChild(**iter);
-        }else if (name == "Main_Rotor"){
-            mainRotorRotation.AddChild(**iter);
-        }else if (name == "Tail_Rotor"){
-            tailRotorRotation.AddChild(**iter);
-        }else if (name == "Landing_Skids"){
-            skidsTransl.AddChild(**iter);
-        }else if (name == "Missiles"){
-            missilesTransl.AddChild(**iter);
-        }else if (name == "Cylinder"){
-            baseTransl.AddChild(**iter);
+    try {
+        if (!VART::MeshObject::ReadFromOBJ("Helicoptero.obj", &objects)) {
+            cerr << "Nao foi possivel carregar Helicoptero.obj.\n";
+            return 1;
         }
-        else{
-            scene.AddObject(*iter);
+    } catch (...) {
+        cerr << "Falha ao carregar Helicoptero.obj ou Helicoptero.mtl.\n";
+        return 1;
+    }
+
+    VART::MeshObject* body = nullptr;
+    VART::MeshObject* mainRotor = nullptr;
+    VART::MeshObject* tailRotor = nullptr;
+    VART::MeshObject* skids = nullptr;
+    VART::MeshObject* missiles = nullptr;
+    VART::MeshObject* base = nullptr;
+    for (auto* object : objects) {
+        const string name = object->GetDescription();
+        if (name == "Helicopter_Body") body = object;
+        else if (name == "Main_Rotor") mainRotor = object;
+        else if (name == "Tail_Rotor") tailRotor = object;
+        else if (name == "Landing_Skids") skids = object;
+        else if (name == "Missiles") missiles = object;
+        else if (name == "Cylinder") base = object;
+        else {
+            cerr << "Peca inesperada em Helicoptero.obj: " << name << ".\n";
+            return 1;
         }
     }
+    if (!body || !mainRotor || !tailRotor || !skids || !missiles || !base) {
+        cerr << "O OBJ precisa conter Helicopter_Body, Main_Rotor, Tail_Rotor, "
+                "Landing_Skids, Missiles e Cylinder.\n";
+        return 1;
+    }
+
+    bodyTransl.AddChild(*body);
+    mainRotorRotation.AddChild(*mainRotor);
+    tailRotorRotation.AddChild(*tailRotor);
+    skidsTransl.AddChild(*skids);
+    missilesTransl.AddChild(*missiles);
+    baseTransl.AddChild(*base);
 
     MyIHClass idleHandler;
     idleHandler.mainRotorRotPtr = &mainRotorRotation;
